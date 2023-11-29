@@ -2,9 +2,10 @@ import chess
 import chess.engine
 
 class ChessGame:
-    def __init__(self):
+    def __init__(self, human_starts=True):
         self.board = chess.Board()
         self.moves_history = []
+        self.human_starts = human_starts
 
     def make_move(self, move):
         if move in self.board.legal_moves:
@@ -27,8 +28,8 @@ class ChessGame:
             return result.move
 
 def print_board(board):
-    print("  a b c d e f g h")
-    print("+------------------")
+    print("\n  a  b  c  d  e  f  g  h")
+    print("+-------------------------")
     for rank in range(8, 0, -1):
         row = f"{rank}|"
         for file in range(1, 9):
@@ -42,14 +43,15 @@ def print_board(board):
         print(row)
 
 def main():
-    game = ChessGame()
+    human_starts = input("Quem começa jogando? (Você - 'v' / Adversário - 'a'): ").lower() == 'v'
+    game = ChessGame(human_starts)
 
     while not game.board.is_game_over():
         print_board(game.board)
 
-        if game.board.turn == chess.WHITE:
-            move_uci = input("Digite a jogada para as Brancas (notação UCI): ")
-            
+        if (game.board.turn == chess.WHITE and game.human_starts) or (game.board.turn == chess.BLACK and not game.human_starts):
+            move_uci = input("Digite a sua jogada (notação UCI): ")
+
             if move_uci.lower() == 'undo':
                 if game.undo_move():
                     print_board(game.board)
