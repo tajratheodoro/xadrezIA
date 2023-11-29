@@ -2,10 +2,9 @@ import chess
 import chess.engine
 
 class ChessGame:
-    def __init__(self, human_starts=True):
+    def __init__(self):
         self.board = chess.Board()
         self.moves_history = []
-        self.human_starts = human_starts
 
     def make_move(self, move):
         if move in self.board.legal_moves:
@@ -43,14 +42,17 @@ def print_board(board):
         print(row)
 
 def main():
-    human_starts = input("Quem começa jogando? (Você - 'v' / Adversário - 'a'): ").lower() == 'v'
-    game = ChessGame(human_starts)
+    print("Bem-vindo ao jogo de xadrez!")
+    game = ChessGame()
+
+    # Escolha de quem começa
+    user_starts = input("Deseja começar jogando? (S/N): ").lower() == 's'
 
     while not game.board.is_game_over():
         print_board(game.board)
 
-        if (game.board.turn == chess.WHITE and game.human_starts) or (game.board.turn == chess.BLACK and not game.human_starts):
-            move_uci = input("Digite a sua jogada (notação UCI): ")
+        if (game.board.turn == chess.WHITE and user_starts) or (game.board.turn == chess.BLACK and not user_starts):
+            move_uci = input("Digite a jogada (notação UCI): ")
 
             if move_uci.lower() == 'undo':
                 if game.undo_move():
@@ -59,14 +61,13 @@ def main():
                     print("Não há jogadas para desfazer.")
             else:
                 move = chess.Move.from_uci(move_uci)
-
                 if game.make_move(move):
                     print_board(game.board)
                 else:
                     print("Movimento inválido. Tente novamente.")
         else:
             move_uci = game.get_best_move().uci()
-            print(f"Melhor jogada para as Pretas: {move_uci}")
+            print(f"Melhor jogada para {'Brancas' if user_starts else 'Pretas'}: {move_uci}")
             move = chess.Move.from_uci(move_uci)
             game.make_move(move)
 
