@@ -29,23 +29,21 @@ class ChessGame:
 def print_board(board):
     print("\n  a  b  c  d  e  f  g  h")
     print("+-------------------------")
+    
     for rank in range(8, 0, -1):
         row = f"{rank}|"
+        
         for file in range(1, 9):
             square = chess.square(file - 1, rank - 1)
             piece = board.piece_at(square)
-
-            if piece is not None:
-                row += f" {piece.symbol()} "
-            else:
-                row += " . "
+            row += f" {piece.symbol()} " if piece else " . "
+            
         print(row)
 
 def main():
     print("Bem-vindo ao jogo de xadrez!")
     game = ChessGame()
 
-    # Escolha de quem começa
     user_starts = input("Deseja começar jogando? (S/N): ").lower() == 's'
 
     while not game.board.is_game_over():
